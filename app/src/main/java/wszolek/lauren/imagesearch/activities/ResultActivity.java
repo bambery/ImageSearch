@@ -12,7 +12,6 @@ import android.view.MenuItem;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
-import
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,6 +21,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 
+import cz.msebera.android.httpclient.Header;
 import wszolek.lauren.imagesearch.R;
 import wszolek.lauren.imagesearch.adapters.ImageResultAdapter;
 import wszolek.lauren.imagesearch.models.ImageResult;
@@ -39,7 +39,8 @@ public class ResultActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        setupViews();
+//        setupViews();
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rvResults);
         //not actually sure what this does - play around a bit with this
         recyclerView.setHasFixedSize(true);
 

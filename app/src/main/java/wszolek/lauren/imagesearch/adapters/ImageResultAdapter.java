@@ -34,7 +34,7 @@ public class ImageResultAdapter extends RecyclerView.Adapter<ImageHolder> {
     public void onBindViewHolder(ImageHolder imageHolder, int position) {
         ImageResult imageResult = imageResults.get(position);
         Picasso.with(context)
-                .load(imageResult.thumbUrl)
+                .load(imageResult.getThumbUrl())
 // implement this in a min
 //                .placeholder(R.drawable.placeholder)
                 .into(imageHolder.ivImage);

@@ -7,10 +7,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class ImageResult {
-    public Integer width;
-    public Integer height;
-    public String thumbUrl;
-    public String url;
+    private Integer width;
+    private Integer height;
+    private String thumbUrl;
+    private String url;
 
     public Integer getWidth() {
         return width;
