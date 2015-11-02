@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- color palette from here: http://www.colourlovers.com/palette/580974/Adrift_in_Dreams -->
+    <color name="blue_dream">#0B486B</color>
+    <color name="green_sail">#3B8686</color>
+    <color name="green_sea">#79BD9A</color>
+    <color name="green_seafoam">#A8DBA8</color>
+    <color name="green_sunlit_sea">#CFF09E</color>
+</resources>
