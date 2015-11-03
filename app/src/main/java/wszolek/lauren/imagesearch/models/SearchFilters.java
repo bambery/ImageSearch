@@ -3,6 +3,8 @@ package wszolek.lauren.imagesearch.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+// https://developers.google.com/image-search/v1/jsondevguide#json_reference
+
 public class SearchFilters implements Parcelable {
     private String imageSize;
     private String colorFilter;
@@ -18,7 +20,7 @@ public class SearchFilters implements Parcelable {
     }
 
     public String getColorFilterUrlArgument(){
-        if(colorFilter != null) {
+        if(colorFilter != null && colorFilter != "any") {
             return "&imgcolor=" + colorFilter;
         }
         return "";
@@ -33,7 +35,7 @@ public class SearchFilters implements Parcelable {
     }
 
     public String getImageTypeUrlArgument(){
-        if(imageType != null){
+        if(imageType != null && imageType != "any"){
             return "&imgtype=" + imageType;
         }
         return "";
@@ -65,7 +67,7 @@ public class SearchFilters implements Parcelable {
 
     public String getImageSizeUrlArgument(){
         String sizeStr;
-        if(imageSize == null) {
+        if(imageSize == null || imageSize == "any") {
             return "";
         } else {
             switch(imageSize){

@@ -6,6 +6,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+// https://developers.google.com/image-search/v1/jsondevguide#json_reference
+
 public class ImageResult {
     private Integer width;
     private Integer height;

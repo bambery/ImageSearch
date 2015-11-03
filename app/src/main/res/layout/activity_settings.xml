@@ -9,8 +9,9 @@
         android:layout_height="wrap_content"
         android:text="New Text"
         android:id="@+id/tvSize"
-        android:textSize="20sp"
-        android:textIsSelectable="false"/>
+        android:textSize="@dimen/filter_text"
+        android:textIsSelectable="false"
+        android:layout_margin="5dp"/>
 
     <Spinner
         android:layout_width="wrap_content"
@@ -19,6 +20,28 @@
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/tvSize"
         android:layout_toEndOf="@+id/tvSize"
-        android:layout_alignBaseline="@+id/tvSize"/>
+        android:textSize="@dimen/filter_text"
+        android:layout_alignBaseline="@+id/tvSize"
+        android:layout_margin="5dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:id="@+id/tvColors"
+        android:textSize="@dimen/filter_text"
+        android:textIsSelectable="false"
+        android:layout_below="@+id/tvSize"
+        android:layout_margin="5dp"/>
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/spColors"
+        android:layout_toRightOf="@+id/tvColors"
+        android:layout_toEndOf="@+id/tvColors"
+        android:textSize="@dimen/filter_text"
+        android:layout_alignBaseline="@+id/tvColors"
+        android:layout_margin="5dp"/>
 
 </RelativeLayout>

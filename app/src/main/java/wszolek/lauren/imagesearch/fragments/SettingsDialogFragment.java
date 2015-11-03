@@ -16,6 +16,8 @@ import wszolek.lauren.imagesearch.models.SearchFilters;
 
 public class SettingsDialogFragment extends DialogFragment{
 
+    // http://developer.android.com/reference/android/app/AlertDialog.Builder.html
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // use the builder class for convenient dialog construction
@@ -24,12 +26,17 @@ public class SettingsDialogFragment extends DialogFragment{
         View filtersView = inflater.inflate(R.layout.activity_settings, null);
         builder.setView(filtersView);
 
-        //populate the view
-        Spinner spinner = (Spinner) filtersView.findViewById(R.id.spSize);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(), R.array.image_sizes_array, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
+        //populate the size spinner
+        Spinner sizeSpinner = (Spinner) filtersView.findViewById(R.id.spSize);
+        ArrayAdapter<CharSequence> sizeAdapter = ArrayAdapter.createFromResource(getContext(), R.array.image_sizes_array, android.R.layout.simple_spinner_item);
+        sizeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        sizeSpinner.setAdapter(sizeAdapter);
 
+        //populate the color spinner
+        Spinner colorSpinner = (Spinner) filtersView.findViewById(R.id.spColors);
+        ArrayAdapter<CharSequence> colorAdapter = ArrayAdapter.createFromResource(getContext(), R.array.image_colors, android.R.layout.simple_spinner_item);
+        colorAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        colorSpinner.setAdapter(colorAdapter);
 
         // add buttons
         builder.setMessage(R.string.advanced_filters)
