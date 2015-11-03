@@ -6,10 +6,10 @@ import android.os.Parcelable;
 // https://developers.google.com/image-search/v1/jsondevguide#json_reference
 
 public class SearchFilters implements Parcelable {
-    private String imageSize;
-    private String colorFilter;
-    private String imageType;
-    private String siteFilter;
+    private String imageSize = "any";
+    private String colorFilter = "any";
+    private String imageType = "any";
+    private String siteFilter = "";
 
     public String getColorFilter() {
         return colorFilter;
@@ -20,7 +20,7 @@ public class SearchFilters implements Parcelable {
     }
 
     public String getColorFilterUrlArgument(){
-        if(colorFilter != null && colorFilter != "any") {
+        if(colorFilter != "any") {
             return "&imgcolor=" + colorFilter;
         }
         return "";
@@ -35,7 +35,7 @@ public class SearchFilters implements Parcelable {
     }
 
     public String getImageTypeUrlArgument(){
-        if(imageType != null && imageType != "any"){
+        if(imageType != "any"){
             return "&imgtype=" + imageType;
         }
         return "";
@@ -50,7 +50,7 @@ public class SearchFilters implements Parcelable {
     }
 
     public String getSiteFilterUrlArgument(){
-        if(siteFilter != null){
+        if(siteFilter != ""){
             return "&as_sitesearch=" + siteFilter;
 
         }
@@ -67,7 +67,7 @@ public class SearchFilters implements Parcelable {
 
     public String getImageSizeUrlArgument(){
         String sizeStr;
-        if(imageSize == null || imageSize == "any") {
+        if(imageSize == "any") {
             return "";
         } else {
             switch(imageSize){

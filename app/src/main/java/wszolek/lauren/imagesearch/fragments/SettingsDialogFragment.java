@@ -17,6 +17,7 @@ import wszolek.lauren.imagesearch.models.SearchFilters;
 public class SettingsDialogFragment extends DialogFragment{
 
     // http://developer.android.com/reference/android/app/AlertDialog.Builder.html
+    // setting spinner values: http://stackoverflow.com/questions/11072576/set-selected-item-of-spinner-programmatically
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -24,6 +25,7 @@ public class SettingsDialogFragment extends DialogFragment{
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View filtersView = inflater.inflate(R.layout.activity_settings, null);
+        SearchFilters sFilters = getArguments().getParcelable("filters");
         builder.setView(filtersView);
 
         //populate the size spinner
@@ -31,12 +33,14 @@ public class SettingsDialogFragment extends DialogFragment{
         ArrayAdapter<CharSequence> sizeAdapter = ArrayAdapter.createFromResource(getContext(), R.array.image_sizes_array, android.R.layout.simple_spinner_item);
         sizeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sizeSpinner.setAdapter(sizeAdapter);
+        sizeSpinner.setSelection(sizeAdapter.getPosition(sFilters.getImageSize()));
 
         //populate the color spinner
         Spinner colorSpinner = (Spinner) filtersView.findViewById(R.id.spColors);
         ArrayAdapter<CharSequence> colorAdapter = ArrayAdapter.createFromResource(getContext(), R.array.image_colors, android.R.layout.simple_spinner_item);
         colorAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         colorSpinner.setAdapter(colorAdapter);
+        colorSpinner.setSelection(colorAdapter.getPosition(sFilters.getColorFilter()));
 
         // add buttons
         builder.setMessage(R.string.advanced_filters)
@@ -57,7 +61,7 @@ public class SettingsDialogFragment extends DialogFragment{
     public static SettingsDialogFragment newInstance(SearchFilters sFilters) {
         SettingsDialogFragment frag = new SettingsDialogFragment();
         Bundle args = new Bundle();
-        args.putParcelable("filter", sFilters);
+        args.putParcelable("filters", sFilters);
         frag.setArguments(args);
         return frag;
     }
