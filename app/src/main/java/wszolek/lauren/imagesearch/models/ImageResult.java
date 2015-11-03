@@ -32,8 +32,8 @@ public class ImageResult {
     public ImageResult(JSONObject json) {
         try {
             this.url = json.getString("url");
-            this.height = Integer.getInteger(json.getString("height"));
-            this.width = Integer.getInteger(json.getString("width"));
+            this.height = Integer.parseInt(json.getString("height"));
+            this.width = Integer.parseInt(json.getString("width"));
             this.thumbUrl = json.getString("tbUrl");
         } catch(JSONException e) {
             e.printStackTrace();
