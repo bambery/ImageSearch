@@ -1,6 +1,9 @@
 package wszolek.lauren.imagesearch.models;
 
-public class SearchFilters {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class SearchFilters implements Parcelable {
     private String imageSize;
     private String colorFilter;
     private String imageType;
@@ -61,10 +64,28 @@ public class SearchFilters {
     }
 
     public String getImageSizeUrlArgument(){
-        if(imageSize != null){
-            return "&imgsz=" + imageSize;
+        String sizeStr;
+        if(imageSize == null) {
+            return "";
+        } else {
+            switch(imageSize){
+                case "icon":
+                    sizeStr = "icon";
+                    break;
+                case "medium":
+                    sizeStr = "medium";
+                    break;
+                case "large":
+                    sizeStr = "xxlarge";
+                    break;
+                case "x-large":
+                    sizeStr = "huge";
+                    break;
+                default:
+                    return "";
+            }
+            return "&imgsz=" + sizeStr;
         }
-        return "";
     }
 
     public String getFilterArguments(){
@@ -73,4 +94,37 @@ public class SearchFilters {
                        + getImageTypeUrlArgument() + getSiteFilterUrlArgument();
 
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.imageSize);
+        dest.writeString(this.colorFilter);
+        dest.writeString(this.imageType);
+        dest.writeString(this.siteFilter);
+    }
+
+    public SearchFilters() {
+    }
+
+    protected SearchFilters(Parcel in) {
+        this.imageSize = in.readString();
+        this.colorFilter = in.readString();
+        this.imageType = in.readString();
+        this.siteFilter = in.readString();
+    }
+
+    public static final Parcelable.Creator<SearchFilters> CREATOR = new Parcelable.Creator<SearchFilters>() {
+        public SearchFilters createFromParcel(Parcel source) {
+            return new SearchFilters(source);
+        }
+
+        public SearchFilters[] newArray(int size) {
+            return new SearchFilters[size];
+        }
+    };
 }
