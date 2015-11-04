@@ -26,7 +26,7 @@ public class SettingsDialogFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View filtersView = inflater.inflate(R.layout.activity_settings, null);
-        final SearchFilters sFilters = getArguments().getParcelable("filters");
+        final SearchFilters sFilters = SearchFilters.getInstance(this.getContext());
         builder.setView(filtersView);
 
         //populate the size spinner
@@ -35,6 +35,8 @@ public class SettingsDialogFragment extends DialogFragment {
         sizeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sizeSpinner.setAdapter(sizeAdapter);
         sizeSpinner.setSelection(sizeAdapter.getPosition(sFilters.getImageSize()));
+
+        //probably not the right way right here...
         sizeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -74,7 +76,6 @@ public class SettingsDialogFragment extends DialogFragment {
     public static SettingsDialogFragment newInstance(SearchFilters sFilters) {
         SettingsDialogFragment frag = new SettingsDialogFragment();
         Bundle args = new Bundle();
-        args.putParcelable("filters", sFilters);
         frag.setArguments(args);
         return frag;
     }

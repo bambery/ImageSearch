@@ -34,6 +34,8 @@ public class ResultActivity extends AppCompatActivity {
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
     private ArrayList<ImageResult> imageResults;
     private ImageResultAdapter aImageResult;
+
+    // my singleton filters
     private SearchFilters searchFilters;
 
     private static final String BASE_URL = "https://ajax.googleapis.com/ajax/services/search/images?v=1.0&rsz=8&safe=active&q=";
@@ -53,7 +55,7 @@ public class ResultActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(staggeredGridLayoutManager);
 
         imageResults = new ArrayList<>();
-        searchFilters = new SearchFilters();
+        searchFilters = SearchFilters.getInstance(this);
         aImageResult = new ImageResultAdapter(this, imageResults);
         recyclerView.setAdapter(aImageResult);
 

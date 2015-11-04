@@ -1,14 +1,15 @@
 package wszolek.lauren.imagesearch.models;
 
-// https://developers.google.com/image-search/v1/jsondevguide#json_reference
+// google api link: https://developers.google.com/image-search/v1/jsondevguide#json_reference
+// shared preferences doc: http://developer.android.com/reference/android/content/SharedPreferences.html
 
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import wszolek.lauren.imagesearch.R;
-
 public final class SearchFilters {
     // singleton class for storing filter preferences
+
+    private static final String MyPreferences = "MyPrefs";
 
     private static final String DEFAULT_FILTER_COLOR = "any";
     private static final String DEFAULT_FILTER_SIZE = "any";
@@ -16,16 +17,16 @@ public final class SearchFilters {
     private static final String DEFAULT_FILTER_SITE = "";
 
     private Context mContext;
+    private SharedPreferences sharedPref;
+    private SharedPreferences.Editor editor;
     private SearchFilters(Context context) {
         mContext = context;
+        // access to read/write to file system
+        sharedPref = mContext.getSharedPreferences("wszolek.lauren.imagesearch.MyPreferences", Context.MODE_PRIVATE);
+        editor = sharedPref.edit();
     }
 
-    // access to read/write to file system
-    private SharedPreferences sharedPref = mContext.getSharedPreferences(sFiltersInstance.mContext.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-    private SharedPreferences.Editor editor = sharedPref.edit();
-
     private static SearchFilters sFiltersInstance;
-
 
     private static String imageSize;
     private static String colorFilter;
@@ -47,7 +48,7 @@ public final class SearchFilters {
         return colorFilter;
     }
 
-    public static void setColorFilter(String colorFilterNew) {
+    public void setColorFilter(String colorFilterNew) {
         colorFilter = colorFilterNew;
     }
 
@@ -63,7 +64,7 @@ public final class SearchFilters {
         return imageType;
     }
 
-    public static void setImageType(String imageTypeNew) {
+    public void setImageType(String imageTypeNew) {
         imageType = imageTypeNew;
     }
 
@@ -79,7 +80,7 @@ public final class SearchFilters {
         return siteFilter;
     }
 
-    public static void setSiteFilter(String siteFilterNew) {
+    public void setSiteFilter(String siteFilterNew) {
         siteFilter = siteFilterNew;
     }
 
@@ -96,7 +97,7 @@ public final class SearchFilters {
         return imageSize;
     }
 
-    public static void setImageSize(String imageSizeNew) {
+    public void setImageSize(String imageSizeNew) {
         imageSize = imageSizeNew;
     }
 
@@ -132,7 +133,7 @@ public final class SearchFilters {
 
     }
 
-    // TODO move string into string file
+    // TODO move strings into string file?
     public void saveFilters() {
         editor.putString("image_size", imageSize);
         editor.putString("image_color", colorFilter);
