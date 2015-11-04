@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.Spinner;
 
 import wszolek.lauren.imagesearch.R;
@@ -36,7 +37,7 @@ public class SettingsDialogFragment extends DialogFragment {
         sizeSpinner.setAdapter(sizeAdapter);
         sizeSpinner.setSelection(sizeAdapter.getPosition(sFilters.getImageSize()));
 
-        //probably not the right way right here...
+        //listen for changes to dropdown
         sizeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -55,28 +56,62 @@ public class SettingsDialogFragment extends DialogFragment {
         colorAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         colorSpinner.setAdapter(colorAdapter);
         colorSpinner.setSelection(colorAdapter.getPosition(sFilters.getColorFilter()));
+        //listen for changes to dropdown
+        colorSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                sFilters.setColorFilter(parent.getItemAtPosition(position).toString());
+            }
 
-        // add buttons
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // don't do anything
+            }
+        });
+
+        // populate the type spinner
+        // this appears to be no longer supported: https://github.com/hubot-scripts/hubot-google-images/issues/10
+        Spinner typeSpinner = (Spinner) filtersView.findViewById(R.id.spType);
+        ArrayAdapter<CharSequence> typeAdapter = ArrayAdapter.createFromResource(getContext(), R.array.image_types, android.R.layout.simple_spinner_item);
+        typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        typeSpinner.setAdapter(typeAdapter);
+        typeSpinner.setSelection(typeAdapter.getPosition(sFilters.getImageType()));
+        //listen for changes to dropdown
+        typeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                sFilters.setImageType(parent.getItemAtPosition(position).toString());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // don't do anything
+            }
+        });
+
+        // populate the site filter
+        // should set a touch listener on the parent view to capture changes in text, doing hacky
+        // workaround because nearly 3am
+        final EditText etSiteFilter = (EditText) filtersView.findViewById(R.id.etSiteFilter);
+        etSiteFilter.setText(sFilters.getSiteFilter());
+
+        // save your changes
         builder.setMessage(R.string.advanced_filters)
                 .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        // save the values to the filter
+                        // hacky workaround 
+                        sFilters.setSiteFilter(etSiteFilter.getText().toString());
+                        // save the filter values
+                        sFilters.saveFilters();
                     }
                 })
                 .setNegativeButton(R.string.clear, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // clear all values set on filter
-                        // not working
+                        sFilters.clearFilters();
                     }
                 });
         // Create the AlertDialog object and return it
         return builder.create();
-    }
-
-    public static SettingsDialogFragment newInstance(SearchFilters sFilters) {
-        SettingsDialogFragment frag = new SettingsDialogFragment();
-        Bundle args = new Bundle();
-        frag.setArguments(args);
-        return frag;
     }
 }

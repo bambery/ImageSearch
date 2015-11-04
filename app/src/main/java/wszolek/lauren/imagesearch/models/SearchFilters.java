@@ -13,7 +13,7 @@ public final class SearchFilters {
 
     private static final String DEFAULT_FILTER_COLOR = "any";
     private static final String DEFAULT_FILTER_SIZE = "any";
-    private static final String DEFAULT_FILER_TYPE = "any";
+    private static final String DEFAULT_FILTER_TYPE = "any";
     private static final String DEFAULT_FILTER_SITE = "";
 
     private Context mContext;
@@ -37,7 +37,7 @@ public final class SearchFilters {
 
     // my real constructor
     public static SearchFilters getInstance(Context context){
-        if(sFiltersInstance  == null) {
+        if(sFiltersInstance == null) {
             sFiltersInstance = new SearchFilters(context.getApplicationContext());
         }
         return sFiltersInstance;
@@ -52,15 +52,15 @@ public final class SearchFilters {
         colorFilter = colorFilterNew;
     }
 
-    public static String getColorFilterUrlArgument() {
-        if (colorFilter != "any") {
-            return "&imgcolor=" + colorFilter;
+    public String getColorFilterUrlArgument() {
+        if (colorFilter != null && colorFilter != "any") {
+            return "&imgcolor=" + getColorFilter();
         }
         return "";
     }
 
     public String getImageType() {
-        imageType = sharedPref.getString("image_type", DEFAULT_FILTER_SIZE);
+        imageType = sharedPref.getString("image_type", DEFAULT_FILTER_TYPE);
         return imageType;
     }
 
@@ -68,9 +68,9 @@ public final class SearchFilters {
         imageType = imageTypeNew;
     }
 
-    public static String getImageTypeUrlArgument() {
-        if (imageType != "any") {
-            return "&imgtype=" + imageType;
+    public String getImageTypeUrlArgument() {
+        if (imageType != null && imageType != "any") {
+            return "&imgtype=" + getImageType();
         }
         return "";
     }
@@ -84,10 +84,9 @@ public final class SearchFilters {
         siteFilter = siteFilterNew;
     }
 
-    public static String getSiteFilterUrlArgument() {
-        if (siteFilter != "") {
-            return "&as_sitesearch=" + siteFilter;
-
+    public String getSiteFilterUrlArgument() {
+        if (siteFilter != null && siteFilter != "") {
+            return "&as_sitesearch=" + getSiteFilter();
         }
         return "";
     }
@@ -101,12 +100,13 @@ public final class SearchFilters {
         imageSize = imageSizeNew;
     }
 
-    public static String getImageSizeUrlArgument() {
+    public String getImageSizeUrlArgument() {
         String sizeStr;
-        if (imageSize == "any") {
+        String imgSz = getImageSize();
+        if (imgSz == null || imgSz == "any") {
             return "";
         } else {
-            switch (imageSize) {
+            switch (imgSz) {
                 case "icon":
                     sizeStr = "icon";
                     break;
@@ -133,12 +133,20 @@ public final class SearchFilters {
 
     }
 
-    // TODO move strings into string file?
+    // gotta push the button if you want to save!
     public void saveFilters() {
         editor.putString("image_size", imageSize);
-        editor.putString("image_color", colorFilter);
+        editor.putString("color_filter", colorFilter);
         editor.putString("image_type", imageType);
         editor.putString("site_filter", siteFilter);
+        editor.commit();
+    }
+
+    public void clearFilters() {
+        editor.putString("image_size", null);
+        editor.putString("color_filter", null);
+        editor.putString("image_type", null);
+        editor.putString("site_filter", null);
         editor.commit();
     }
 }

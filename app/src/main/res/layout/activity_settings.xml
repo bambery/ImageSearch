@@ -7,7 +7,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Text"
+        android:text="@string/spinner_label_size"
         android:id="@+id/tvSize"
         android:textSize="@dimen/filter_text"
         android:textIsSelectable="false"
@@ -27,7 +27,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Text"
+        android:text="@string/spinner_label_color_filter"
         android:id="@+id/tvColors"
         android:textSize="@dimen/filter_text"
         android:textIsSelectable="false"
@@ -43,5 +43,47 @@
         android:textSize="@dimen/filter_text"
         android:layout_alignBaseline="@+id/tvColors"
         android:layout_margin="5dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/spinner_label_image_type"
+        android:id="@+id/tvType"
+        android:textSize="@dimen/filter_text"
+        android:textIsSelectable="false"
+        android:layout_below="@+id/tvColors"
+        android:layout_margin="5dp"/>
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/spType"
+        android:layout_toRightOf="@+id/tvType"
+        android:layout_toEndOf="@+id/tvType"
+        android:textSize="@dimen/filter_text"
+        android:layout_alignBaseline="@+id/tvType"
+        android:layout_margin="5dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/text_entry_site_filter"
+        android:id="@+id/tvSiteFilter"
+        android:textSize="@dimen/filter_text"
+        android:textIsSelectable="false"
+        android:layout_margin="5dp"
+        android:layout_alignTop="@+id/etSiteFilter"
+        android:layout_alignBottom="@+id/etSiteFilter"
+        android:gravity="center_vertical"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/etSiteFilter"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:textSize="@dimen/filter_text"
+        android:layout_toRightOf="@+id/tvSiteFilter"
+        android:layout_below="@+id/tvType"/>
 
 </RelativeLayout>
