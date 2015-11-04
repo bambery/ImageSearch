@@ -1,56 +1,90 @@
 package wszolek.lauren.imagesearch.models;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 // https://developers.google.com/image-search/v1/jsondevguide#json_reference
 
-public class SearchFilters implements Parcelable {
-    private String imageSize = "any";
-    private String colorFilter = "any";
-    private String imageType = "any";
-    private String siteFilter = "";
+import android.content.Context;
+import android.content.SharedPreferences;
+
+import wszolek.lauren.imagesearch.R;
+
+public final class SearchFilters {
+    // singleton class for storing filter preferences
+
+    private static final String DEFAULT_FILTER_COLOR = "any";
+    private static final String DEFAULT_FILTER_SIZE = "any";
+    private static final String DEFAULT_FILER_TYPE = "any";
+    private static final String DEFAULT_FILTER_SITE = "";
+
+    private Context mContext;
+    private SearchFilters(Context context) {
+        mContext = context;
+    }
+
+    // access to read/write to file system
+    private SharedPreferences sharedPref = mContext.getSharedPreferences(sFiltersInstance.mContext.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+    private SharedPreferences.Editor editor = sharedPref.edit();
+
+    private static SearchFilters sFiltersInstance;
+
+
+    private static String imageSize;
+    private static String colorFilter;
+    private static String imageType;
+    private static String siteFilter;
+
+    // get context from main activity once
+
+    // my real constructor
+    public static SearchFilters getInstance(Context context){
+        if(sFiltersInstance  == null) {
+            sFiltersInstance = new SearchFilters(context.getApplicationContext());
+        }
+        return sFiltersInstance;
+    }
 
     public String getColorFilter() {
+        colorFilter = sharedPref.getString("color_filter", DEFAULT_FILTER_COLOR);
         return colorFilter;
     }
 
-    public void setColorFilter(String colorFilter) {
-        this.colorFilter = colorFilter;
+    public static void setColorFilter(String colorFilterNew) {
+        colorFilter = colorFilterNew;
     }
 
-    public String getColorFilterUrlArgument(){
-        if(colorFilter != "any") {
+    public static String getColorFilterUrlArgument() {
+        if (colorFilter != "any") {
             return "&imgcolor=" + colorFilter;
         }
         return "";
     }
 
     public String getImageType() {
+        imageType = sharedPref.getString("image_type", DEFAULT_FILTER_SIZE);
         return imageType;
     }
 
-    public void setImageType(String imageType) {
-        this.imageType = imageType;
+    public static void setImageType(String imageTypeNew) {
+        imageType = imageTypeNew;
     }
 
-    public String getImageTypeUrlArgument(){
-        if(imageType != "any"){
+    public static String getImageTypeUrlArgument() {
+        if (imageType != "any") {
             return "&imgtype=" + imageType;
         }
         return "";
     }
 
     public String getSiteFilter() {
+        siteFilter = sharedPref.getString("site_filter", DEFAULT_FILTER_SITE);
         return siteFilter;
     }
 
-    public void setSiteFilter(String siteFilter) {
-        this.siteFilter = siteFilter;
+    public static void setSiteFilter(String siteFilterNew) {
+        siteFilter = siteFilterNew;
     }
 
-    public String getSiteFilterUrlArgument(){
-        if(siteFilter != ""){
+    public static String getSiteFilterUrlArgument() {
+        if (siteFilter != "") {
             return "&as_sitesearch=" + siteFilter;
 
         }
@@ -58,19 +92,20 @@ public class SearchFilters implements Parcelable {
     }
 
     public String getImageSize() {
+        imageSize = sharedPref.getString("image_size", DEFAULT_FILTER_SIZE);
         return imageSize;
     }
 
-    public void setImageSize(String imageSize) {
-        this.imageSize = imageSize;
+    public static void setImageSize(String imageSizeNew) {
+        imageSize = imageSizeNew;
     }
 
-    public String getImageSizeUrlArgument(){
+    public static String getImageSizeUrlArgument() {
         String sizeStr;
-        if(imageSize == "any") {
+        if (imageSize == "any") {
             return "";
         } else {
-            switch(imageSize){
+            switch (imageSize) {
                 case "icon":
                     sizeStr = "icon";
                     break;
@@ -90,43 +125,19 @@ public class SearchFilters implements Parcelable {
         }
     }
 
-    public String getFilterArguments(){
+    public String getFilterArguments() {
         return getImageSizeUrlArgument()
                        + getColorFilterUrlArgument()
                        + getImageTypeUrlArgument() + getSiteFilterUrlArgument();
 
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    // TODO move string into string file
+    public void saveFilters() {
+        editor.putString("image_size", imageSize);
+        editor.putString("image_color", colorFilter);
+        editor.putString("image_type", imageType);
+        editor.putString("site_filter", siteFilter);
+        editor.commit();
     }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.imageSize);
-        dest.writeString(this.colorFilter);
-        dest.writeString(this.imageType);
-        dest.writeString(this.siteFilter);
-    }
-
-    public SearchFilters() {
-    }
-
-    protected SearchFilters(Parcel in) {
-        this.imageSize = in.readString();
-        this.colorFilter = in.readString();
-        this.imageType = in.readString();
-        this.siteFilter = in.readString();
-    }
-
-    public static final Parcelable.Creator<SearchFilters> CREATOR = new Parcelable.Creator<SearchFilters>() {
-        public SearchFilters createFromParcel(Parcel source) {
-            return new SearchFilters(source);
-        }
-
-        public SearchFilters[] newArray(int size) {
-            return new SearchFilters[size];
-        }
-    };
 }

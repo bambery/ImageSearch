@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">Image Search</string>
 
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="advanced_filters">Advanced Filters</string>
     <string name="save">Save</string>
     <string name="clear">Clear</string>
+    <string name="preference_file_key">wszolek.lauren.imagesearch.filters</string>
 </resources>
