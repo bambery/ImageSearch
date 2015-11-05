@@ -35,6 +35,11 @@ public class ResultActivity extends AppCompatActivity {
     private ArrayList<ImageResult> imageResults;
     private ImageResultAdapter aImageResult;
 
+    //links for staggered grid:
+    // http://inducesmile.com/android/android-staggeredgridlayoutmanager-example-tutorial/
+    // https://developer.android.com/reference/android/support/v7/widget/StaggeredGridLayoutManager.html
+    // https://www.bignerdranch.com/blog/recyclerview-part-1-fundamentals-for-listview-experts/
+
     // my singleton filters
     private SearchFilters searchFilters;
 
@@ -59,10 +64,6 @@ public class ResultActivity extends AppCompatActivity {
         aImageResult = new ImageResultAdapter(this, imageResults);
         recyclerView.setAdapter(aImageResult);
 
-    }
-
-    private void setupViews() {
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rvResults);
     }
 
     @Override

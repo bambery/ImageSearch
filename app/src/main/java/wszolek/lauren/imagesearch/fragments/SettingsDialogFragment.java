@@ -25,6 +25,7 @@ public class SettingsDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // use the builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        // does not have a holder, should do
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View filtersView = inflater.inflate(R.layout.activity_settings, null);
         final SearchFilters sFilters = SearchFilters.getInstance(this.getContext());
@@ -92,6 +93,7 @@ public class SettingsDialogFragment extends DialogFragment {
         // populate the site filter
         // should set a touch listener on the parent view to capture changes in text, doing hacky
         // workaround because nearly 3am
+        // or do this, but it requires soft keyboard: http://guides.codepath.com/android/Basic-Event-Listeners - OnEditorActionListener
         final EditText etSiteFilter = (EditText) filtersView.findViewById(R.id.etSiteFilter);
         etSiteFilter.setText(sFilters.getSiteFilter());
 
@@ -99,7 +101,7 @@ public class SettingsDialogFragment extends DialogFragment {
         builder.setMessage(R.string.advanced_filters)
                 .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        // hacky workaround 
+                        // hacky workaround
                         sFilters.setSiteFilter(etSiteFilter.getText().toString());
                         // save the filter values
                         sFilters.saveFilters();
