@@ -29,7 +29,7 @@ import wszolek.lauren.imagesearch.fragments.SettingsDialogFragment;
 import wszolek.lauren.imagesearch.models.ImageResult;
 import wszolek.lauren.imagesearch.models.SearchFilters;
 
-public class ResultActivity extends AppCompatActivity {
+public class ResultActivity extends AppCompatActivity implements SettingsDialogFragment.OnFiltersListener {
     private RecyclerView recyclerView;
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
     private ArrayList<ImageResult> imageResults;
@@ -60,7 +60,7 @@ public class ResultActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(staggeredGridLayoutManager);
 
         imageResults = new ArrayList<>();
-        searchFilters = SearchFilters.getInstance(this);
+        searchFilters = new SearchFilters(this);
         aImageResult = new ImageResultAdapter(this, imageResults);
         recyclerView.setAdapter(aImageResult);
 
@@ -70,7 +70,7 @@ public class ResultActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        // set up the listener for when the search is performed
+        // set up the listener for when the searchFilters is performed
         MenuItem searchItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setOnQueryTextListener(new OnQueryTextListener() {
@@ -129,5 +129,10 @@ public class ResultActivity extends AppCompatActivity {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onColorChanged(String color) {
+        searchFilters.
     }
 }

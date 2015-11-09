@@ -1,5 +1,6 @@
 package wszolek.lauren.imagesearch.fragments;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -13,6 +14,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import wszolek.lauren.imagesearch.R;
+import wszolek.lauren.imagesearch.activities.ResultActivity;
 import wszolek.lauren.imagesearch.models.SearchFilters;
 
 
@@ -20,6 +22,25 @@ public class SettingsDialogFragment extends DialogFragment {
 
     // http://developer.android.com/reference/android/app/AlertDialog.Builder.html
     // setting spinner values: http://stackoverflow.com/questions/11072576/set-selected-item-of-spinner-programmatically
+
+    public interface OnFiltersListener {
+        void onColorChanged(String color);
+    }
+
+    private OnFiltersListener listener;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        listener = (OnFiltersListener) activity;
+    }
+
+    @Override
+    public void onDetach() {
+        listener = null;
+        super.onDetach();
+    }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -42,7 +63,8 @@ public class SettingsDialogFragment extends DialogFragment {
         sizeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                sFilters.setImageSize(parent.getItemAtPosition(position).toString());
+                listener.onColorChanged(parent.getItemAtPosition(position).toString());
+                //sFilters.setImageSize(parent.getItemAtPosition(position).toString());
             }
 
             @Override
@@ -61,6 +83,7 @@ public class SettingsDialogFragment extends DialogFragment {
         colorSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
                 sFilters.setColorFilter(parent.getItemAtPosition(position).toString());
             }
 

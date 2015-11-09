@@ -16,17 +16,12 @@ public final class SearchFilters {
     private static final String DEFAULT_FILTER_TYPE = "any";
     private static final String DEFAULT_FILTER_SITE = "";
 
-    private Context mContext;
     private SharedPreferences sharedPref;
-    private SharedPreferences.Editor editor;
-    private SearchFilters(Context context) {
-        mContext = context;
-        // access to read/write to file system
-        sharedPref = mContext.getSharedPreferences("wszolek.lauren.imagesearch.MyPreferences", Context.MODE_PRIVATE);
-        editor = sharedPref.edit();
-    }
 
-    private static SearchFilters sFiltersInstance;
+    public SearchFilters(Context context) {
+        // access to read/write to file system
+        sharedPref = context.getApplicationContext().getSharedPreferences("wszolek.lauren.imagesearch.MyPreferences", Context.MODE_PRIVATE);
+    }
 
     private static String imageSize;
     private static String colorFilter;
@@ -34,14 +29,6 @@ public final class SearchFilters {
     private static String siteFilter;
 
     // get context from main activity once
-
-    // my real constructor
-    public static SearchFilters getInstance(Context context){
-        if(sFiltersInstance == null) {
-            sFiltersInstance = new SearchFilters(context.getApplicationContext());
-        }
-        return sFiltersInstance;
-    }
 
     public String getColorFilter() {
         colorFilter = sharedPref.getString("color_filter", DEFAULT_FILTER_COLOR);
@@ -135,18 +122,20 @@ public final class SearchFilters {
 
     // gotta push the button if you want to save!
     public void saveFilters() {
+        final SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString("image_size", imageSize);
         editor.putString("color_filter", colorFilter);
         editor.putString("image_type", imageType);
         editor.putString("site_filter", siteFilter);
-        editor.commit();
+        editor.apply();
     }
 
     public void clearFilters() {
+        final SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString("image_size", null);
         editor.putString("color_filter", null);
         editor.putString("image_type", null);
         editor.putString("site_filter", null);
-        editor.commit();
+        editor.apply();
     }
 }

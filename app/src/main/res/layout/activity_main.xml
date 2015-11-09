@@ -10,5 +10,6 @@
         android:id="@+id/rvResults"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_margin="0dp"/>
+        android:layout_margin="0dp"
+        android:background="@android:color/holo_red_dark"/>
 </RelativeLayout>
