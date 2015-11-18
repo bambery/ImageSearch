@@ -30,20 +30,26 @@ import wszolek.lauren.imagesearch.models.ImageResult;
 import wszolek.lauren.imagesearch.models.SearchFilters;
 
 public class ResultActivity extends AppCompatActivity implements SettingsDialogFragment.OnFiltersListener {
-    private RecyclerView recyclerView;
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
     private ArrayList<ImageResult> imageResults;
     private ImageResultAdapter aImageResult;
+
+    private SearchFilters searchFilters;
+    //keep a copy of the unchanged values
+    private SearchFilters searchFiltersOld;
 
     //links for staggered grid:
     // http://inducesmile.com/android/android-staggeredgridlayoutmanager-example-tutorial/
     // https://developer.android.com/reference/android/support/v7/widget/StaggeredGridLayoutManager.html
     // https://www.bignerdranch.com/blog/recyclerview-part-1-fundamentals-for-listview-experts/
 
-    // my singleton filters
-    private SearchFilters searchFilters;
+    //link for cloning items in java
+    // http://stackoverflow.com/questions/869033/how-do-i-copy-an-object-in-java
 
     private static final String BASE_URL = "https://ajax.googleapis.com/ajax/services/search/images?v=1.0&rsz=8&safe=active&q=";
+    //endless scrolling
+    private boolean loading = true;
+    private int pastVisibleItems, visibleItemCount, totalItemCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,19 +57,42 @@ public class ResultActivity extends AppCompatActivity implements SettingsDialogF
         setContentView(R.layout.activity_main);
 
 //        setupViews();
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rvResults);
-        //not actually sure what this does - play around a bit with this
-        recyclerView.setHasFixedSize(true);
+        RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.rvResults);
+        mRecyclerView.setHasFixedSize(true);
 
         // 3 columns, vertical alignment
         staggeredGridLayoutManager = new StaggeredGridLayoutManager(3, 1);
-        recyclerView.setLayoutManager(staggeredGridLayoutManager);
+        mRecyclerView.setLayoutManager(staggeredGridLayoutManager);
 
         imageResults = new ArrayList<>();
         searchFilters = new SearchFilters(this);
+        searchFiltersOld =  new SearchFilters(searchFilters);
         aImageResult = new ImageResultAdapter(this, imageResults);
-        recyclerView.setAdapter(aImageResult);
+        mRecyclerView.setAdapter(aImageResult);
 
+        /*
+        //endless scrolling - can't get it to work
+        mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener({
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+
+                visibleItemCount = staggeredGridLayoutManager.getChildCount();
+                totalItemCount = staggeredGridLayoutManager.getItemCount();
+                int[] firstVisibleItems = null;
+                firstVisibleItems = staggeredGridLayoutManager.findFirstVisibleItemPositions(firstVisibleItems);
+                if(firstVisibleItems != null && firstVisibleItems.length > 0) {
+                    pastVisibleItems = firstVisibleItems[0];
+                }
+
+                if (loading) {
+                    if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
+                        loading = false;
+                        Log.d("tag", "LOAD NEXT ITEM");
+                    }
+                }
+            }
+        }));
+        */
     }
 
     @Override
@@ -102,9 +131,9 @@ public class ResultActivity extends AppCompatActivity implements SettingsDialogF
     }
 
     private void launchSettingsFragment(){
+        SettingsDialogFragment newFragment = SettingsDialogFragment.newInstance(searchFilters);
         FragmentManager fm = getSupportFragmentManager();
-        SettingsDialogFragment settingsDialogFragment = new SettingsDialogFragment();
-        settingsDialogFragment.show(fm, "foo");
+        newFragment.show(fm, "settings");
     }
 
     private void searchImages(String query) {
@@ -132,7 +161,46 @@ public class ResultActivity extends AppCompatActivity implements SettingsDialogF
     }
 
     @Override
-    public void onColorChanged(String color) {
-        searchFilters.
+    public void onSizeChanged(String size) {
+        searchFilters.setImageSize(size);
+    }
+
+    @Override
+    public void onColorFilterChanged(String colorFilter) {
+        searchFilters.setColorFilter(colorFilter);
+    }
+
+    @Override
+    public void onItemTypeChanged(String itemType) {
+        searchFilters.setImageType(itemType);
+    }
+
+    @Override
+    public void onSiteFilterChanged(String site){
+        searchFilters.setSiteFilter(site);
+    }
+
+    @Override
+    public void onAllCleared(){
+        searchFilters.clearFilters();
+    }
+
+    @Override
+    public void goodToSave(){
+        searchFilters.setGoodToSave(true);
+    }
+
+    @Override
+    public void checkToSave(){
+        // if we changed something, save it in preferences
+        if (searchFilters.getGoodToSave() == true){
+            searchFilters.saveFilters();
+            // reset this value since we have saved
+            searchFilters.setGoodToSave(false);
+        } else {
+            // if we changed nothing, revert to what the filters were before opening the dialog
+            searchFilters.clearFilters();
+            searchFilters = searchFiltersOld;
+        }
     }
 }

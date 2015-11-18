@@ -14,7 +14,6 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import wszolek.lauren.imagesearch.R;
-import wszolek.lauren.imagesearch.activities.ResultActivity;
 import wszolek.lauren.imagesearch.models.SearchFilters;
 
 
@@ -22,18 +21,45 @@ public class SettingsDialogFragment extends DialogFragment {
 
     // http://developer.android.com/reference/android/app/AlertDialog.Builder.html
     // setting spinner values: http://stackoverflow.com/questions/11072576/set-selected-item-of-spinner-programmatically
+    // dialogs and passing data: http://developer.android.com/reference/android/app/DialogFragment.html
+    private OnFiltersListener listener;
+
+    private String filterColor;
+    private String filterSize;
+    private String filterSiteFilter;
+    private String filterType;
 
     public interface OnFiltersListener {
-        void onColorChanged(String color);
+        void onSizeChanged(String color);
+        void onColorFilterChanged(String colorFilter);
+        void onItemTypeChanged(String itemType);
+        void onSiteFilterChanged(String site);
+        void onAllCleared();
+        void goodToSave();
+        void checkToSave();
     }
 
-    private OnFiltersListener listener;
+    public static SettingsDialogFragment newInstance(SearchFilters sFilters){
+        SettingsDialogFragment frag = new SettingsDialogFragment();
+        Bundle args = new Bundle();
+        args.putString("color", sFilters.getColorFilter());
+        args.putString("size", sFilters.getImageSize());
+        args.putString("type", sFilters.getImageType());
+        args.putString("site_filter", sFilters.getSiteFilter());
+        frag.setArguments(args);
+        return frag;
+    }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-
         listener = (OnFiltersListener) activity;
+    }
+
+    @Override
+    public void onDestroyView(){
+        listener.checkToSave();
+        super.onDestroyView();
     }
 
     @Override
@@ -44,12 +70,16 @@ public class SettingsDialogFragment extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        filterColor = getArguments().getString("color");
+        filterSize = getArguments().getString("size");
+        filterSiteFilter = getArguments().getString("site_filter");
+        filterType = getArguments().getString("type");
+
         // use the builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        // does not have a holder, should do
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View filtersView = inflater.inflate(R.layout.activity_settings, null);
-        final SearchFilters sFilters = SearchFilters.getInstance(this.getContext());
+        //final SearchFilters sFilters = new SearchFilters (this.getContext());
         builder.setView(filtersView);
 
         //populate the size spinner
@@ -57,13 +87,13 @@ public class SettingsDialogFragment extends DialogFragment {
         ArrayAdapter<CharSequence> sizeAdapter = ArrayAdapter.createFromResource(getContext(), R.array.image_sizes_array, android.R.layout.simple_spinner_item);
         sizeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sizeSpinner.setAdapter(sizeAdapter);
-        sizeSpinner.setSelection(sizeAdapter.getPosition(sFilters.getImageSize()));
+        sizeSpinner.setSelection(sizeAdapter.getPosition(filterSize));
 
         //listen for changes to dropdown
         sizeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                listener.onColorChanged(parent.getItemAtPosition(position).toString());
+                listener.onSizeChanged(parent.getItemAtPosition(position).toString());
                 //sFilters.setImageSize(parent.getItemAtPosition(position).toString());
             }
 
@@ -78,13 +108,13 @@ public class SettingsDialogFragment extends DialogFragment {
         ArrayAdapter<CharSequence> colorAdapter = ArrayAdapter.createFromResource(getContext(), R.array.image_colors, android.R.layout.simple_spinner_item);
         colorAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         colorSpinner.setAdapter(colorAdapter);
-        colorSpinner.setSelection(colorAdapter.getPosition(sFilters.getColorFilter()));
+        colorSpinner.setSelection(colorAdapter.getPosition(filterColor));
         //listen for changes to dropdown
         colorSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-                sFilters.setColorFilter(parent.getItemAtPosition(position).toString());
+                listener.onColorFilterChanged(parent.getItemAtPosition(position).toString());
+                //sFilters.setColorFilter(parent.getItemAtPosition(position).toString());
             }
 
             @Override
@@ -99,12 +129,13 @@ public class SettingsDialogFragment extends DialogFragment {
         ArrayAdapter<CharSequence> typeAdapter = ArrayAdapter.createFromResource(getContext(), R.array.image_types, android.R.layout.simple_spinner_item);
         typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         typeSpinner.setAdapter(typeAdapter);
-        typeSpinner.setSelection(typeAdapter.getPosition(sFilters.getImageType()));
+        typeSpinner.setSelection(typeAdapter.getPosition(filterType));
         //listen for changes to dropdown
         typeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                sFilters.setImageType(parent.getItemAtPosition(position).toString());
+                listener.onItemTypeChanged(parent.getItemAtPosition(position).toString());
+                //sFilters.setImageType(parent.getItemAtPosition(position).toString());
             }
 
             @Override
@@ -118,22 +149,28 @@ public class SettingsDialogFragment extends DialogFragment {
         // workaround because nearly 3am
         // or do this, but it requires soft keyboard: http://guides.codepath.com/android/Basic-Event-Listeners - OnEditorActionListener
         final EditText etSiteFilter = (EditText) filtersView.findViewById(R.id.etSiteFilter);
-        etSiteFilter.setText(sFilters.getSiteFilter());
+        etSiteFilter.setText(filterSiteFilter);
 
         // save your changes
+
         builder.setMessage(R.string.advanced_filters)
                 .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        // hacky workaround
-                        sFilters.setSiteFilter(etSiteFilter.getText().toString());
-                        // save the filter values
-                        sFilters.saveFilters();
+                        String enteredSiteFilter = etSiteFilter.getText().toString();
+                        if (!(filterSiteFilter.equals(enteredSiteFilter))) {
+                            listener.onSiteFilterChanged(enteredSiteFilter);
+                        }
+                        //remove these listeners and just use dopostitive/negative clicks
+                        listener.goodToSave();
                     }
                 })
                 .setNegativeButton(R.string.clear, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        // clear all values set on filter
-                        sFilters.clearFilters();
+                        //reset to defaults
+                        listener.onAllCleared();
+                        //keep the reset values in memory and persist to file system
+                        listener.goodToSave();
+
                     }
                 });
         // Create the AlertDialog object and return it

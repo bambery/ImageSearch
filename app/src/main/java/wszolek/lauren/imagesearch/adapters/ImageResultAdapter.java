@@ -33,7 +33,6 @@ public class ImageResultAdapter extends RecyclerView.Adapter<ImageResultAdapter.
     }
 
     @Override
-    // this is probably where I'd want to put the onClick listener and not in the viewholder? Maybe?
     public void onBindViewHolder(ImageHolder imageHolder, int position) {
         ImageResult imageResult = imageResults.get(position);
         Picasso.with(context)

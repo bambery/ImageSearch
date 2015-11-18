@@ -7,14 +7,17 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 public final class SearchFilters {
-    // singleton class for storing filter preferences
-
-    private static final String MyPreferences = "MyPrefs";
 
     private static final String DEFAULT_FILTER_COLOR = "any";
     private static final String DEFAULT_FILTER_SIZE = "any";
     private static final String DEFAULT_FILTER_TYPE = "any";
     private static final String DEFAULT_FILTER_SITE = "";
+
+    private String imageSize;
+    private String colorFilter;
+    private String imageType;
+    private String siteFilter;
+    private Boolean goodToSave;
 
     private SharedPreferences sharedPref;
 
@@ -23,15 +26,35 @@ public final class SearchFilters {
         sharedPref = context.getApplicationContext().getSharedPreferences("wszolek.lauren.imagesearch.MyPreferences", Context.MODE_PRIVATE);
     }
 
-    private static String imageSize;
-    private static String colorFilter;
-    private static String imageType;
-    private static String siteFilter;
+    //clone
+    public SearchFilters(SearchFilters another){
+        this.imageSize = another.getImageSize();
+        this.colorFilter = another.getColorFilter();
+        this.imageType = another.getImageType();
+        this.siteFilter = another.getSiteFilter();
+        this.goodToSave = false;
+    }
 
-    // get context from main activity once
+    public void setDefaults(){
+        imageSize = DEFAULT_FILTER_SIZE;
+        colorFilter = DEFAULT_FILTER_COLOR;
+        imageType = DEFAULT_FILTER_TYPE;
+        siteFilter = DEFAULT_FILTER_SITE;
+        goodToSave = false;
+    }
+
+    public Boolean getGoodToSave() {
+        return goodToSave;
+    }
+
+    public void setGoodToSave(Boolean save) {
+        goodToSave = save;
+    }
 
     public String getColorFilter() {
-        colorFilter = sharedPref.getString("color_filter", DEFAULT_FILTER_COLOR);
+        if (colorFilter == null) {
+            colorFilter = sharedPref.getString("color_filter", DEFAULT_FILTER_COLOR);
+        }
         return colorFilter;
     }
 
@@ -47,7 +70,9 @@ public final class SearchFilters {
     }
 
     public String getImageType() {
-        imageType = sharedPref.getString("image_type", DEFAULT_FILTER_TYPE);
+        if (imageType == null) {
+            imageType = sharedPref.getString("image_type", DEFAULT_FILTER_TYPE);
+        }
         return imageType;
     }
 
@@ -63,7 +88,9 @@ public final class SearchFilters {
     }
 
     public String getSiteFilter() {
-        siteFilter = sharedPref.getString("site_filter", DEFAULT_FILTER_SITE);
+        if(siteFilter == null) {
+            siteFilter = sharedPref.getString("site_filter", DEFAULT_FILTER_SITE);
+        }
         return siteFilter;
     }
 
@@ -79,7 +106,9 @@ public final class SearchFilters {
     }
 
     public String getImageSize() {
-        imageSize = sharedPref.getString("image_size", DEFAULT_FILTER_SIZE);
+        if (imageSize == null){
+            imageSize = sharedPref.getString("image_size", DEFAULT_FILTER_SIZE);
+        }
         return imageSize;
     }
 
@@ -131,11 +160,9 @@ public final class SearchFilters {
     }
 
     public void clearFilters() {
-        final SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString("image_size", null);
-        editor.putString("color_filter", null);
-        editor.putString("image_type", null);
-        editor.putString("site_filter", null);
-        editor.apply();
+        //final SharedPreferences.Editor editor = sharedPref.edit();
+        setDefaults();
+        //saveFilters();
     }
+
 }
