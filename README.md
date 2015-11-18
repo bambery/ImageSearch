@@ -35,18 +35,25 @@ The following **required** functionality is completed:
   The following **additional** features are implemented:
 
   * [ ] List anything else that you can get done to improve the app functionality!
+  filters are stored in shared preferences and will be maintained on app close/reopen. I also added an easy way to clear all of the filters. Also, I made sure you had to click the "save" button in order to store the filters - clicking outside of the dialog will not save the preferences.
 
-## Video Walkthrough 
+## Video Walkthrough
 
   Here's a walkthrough of implemented user stories:
 
-  <img src='http://i.imgur.com/link/to/your/gif/file.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+  <img src='https://cloud.githubusercontent.com/assets/161639/11232852/25e6dd44-8d6c-11e5-9d8f-c857b5cc2a15.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
   GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 ## Notes
 
-  I was not able to get the infinite scrolling working. There does not appear to be any material from codepath on endless scrolling with a recyclerview and most solutions I found online use a deprecated api, and I was not able to get any of the other examples I found online working. I will talk again with a TA. Originally I had implemented the filters as a singleton, but I was eventually dissuaded from this approach. Most of the struggle was getting the recycler layout working, as I decided to implement the native android version rather than the deprecated fork of the etsy layout which was linked in the assignment.
+  I was not able to get the infinite scrolling working. There does not appear to be any material from codepath on endless scrolling with a recyclerview and most solutions I found online use a deprecated api, and I was not able to get any of the other examples I found online working. I will talk again with a TA. Originally I had implemented the filters as a singleton, but I was eventually dissuaded from this approach. If searches were ever implemented as having a history, it would be necessary to attach an instance of the filters used on each specific search to maintain consistency across the history.
+ 
+ The color and type filters no longer work. This is due to the age of the api and is unrelated to the implementation in the app.
+  
+  Most of the struggle was getting the recycler layout working, as I decided to implement the native android version rather than the deprecated fork of the etsy layout which was linked in the assignment. While it was a struggle, the next time I used a recycler layout, I was more familiar with the concepts and often referrred back to this project, though I wish I could get the endless scrolling working.
+
+  I am storing the filter preferences in the internal shared preferences.
 
 ## Open-source libraries used
 
